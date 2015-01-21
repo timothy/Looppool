@@ -7,6 +7,9 @@
 package LoopPool;
 
 import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import javax.swing.JFileChooser;
 
 /**
  *
@@ -45,6 +48,7 @@ public class LoopPoolGUI extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        fileChooser = new javax.swing.JFileChooser();
         PlayB = new javax.swing.JButton();
         RecordB = new javax.swing.JButton();
         ExportB = new javax.swing.JButton();
@@ -91,6 +95,11 @@ public class LoopPoolGUI extends javax.swing.JFrame {
         jMenu1.add(Open);
 
         Exit.setText("Exit");
+        Exit.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ExitActionPerformed(evt);
+            }
+        });
         jMenu1.add(Exit);
 
         jMenuBar1.add(jMenu1);
@@ -138,8 +147,23 @@ public class LoopPoolGUI extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void OpenActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_OpenActionPerformed
-        // TODO add your handling code here:
+        int returnVal = fileChooser.showOpenDialog(this);
+        if (returnVal == JFileChooser.APPROVE_OPTION) {
+            File file = fileChooser.getSelectedFile();
+            try {
+                // What to do with the file, e.g. display it in a TextArea
+                textarea.read(new FileReader(file.getAbsolutePath()), null);
+            } catch (IOException ex) {
+                System.out.println("problem accessing file" + file.getAbsolutePath());
+            }
+        } else {
+            System.out.println("File access cancelled by user.");
+        }
     }//GEN-LAST:event_OpenActionPerformed
+
+    private void ExitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ExitActionPerformed
+        System.exit(0);
+    }//GEN-LAST:event_ExitActionPerformed
 
     /**
      * @param args the command line arguments
@@ -182,6 +206,7 @@ public class LoopPoolGUI extends javax.swing.JFrame {
     private javax.swing.JMenuItem Open;
     private javax.swing.JButton PlayB;
     private javax.swing.JButton RecordB;
+    private javax.swing.JFileChooser fileChooser;
     private javax.swing.JButton jButton4;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenuBar jMenuBar1;
