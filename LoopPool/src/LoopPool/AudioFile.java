@@ -16,7 +16,8 @@ public class AudioFile extends Thread {
     
     public void getAudio(String fileLoc) {
         try {
-            URL u = new URL(fileLoc);
+            String URLPath = "file:///" + fileLoc;
+            URL u = new URL(URLPath);
             AudioClip wav = Applet.newAudioClip(u);
             wav.play();
         } catch (Exception ex) {

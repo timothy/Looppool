@@ -69,7 +69,7 @@
                       <EmptySpace type="unrelated" max="-2" attributes="0"/>
                       <Component id="ExportB" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="32767" attributes="0"/>
-                      <Component id="jTextField1" min="-2" pref="108" max="-2" attributes="0"/>
+                      <Component id="jTextField1" min="-2" pref="319" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="jButton4" min="-2" max="-2" attributes="0"/>
                       <EmptySpace min="-2" pref="19" max="-2" attributes="0"/>
