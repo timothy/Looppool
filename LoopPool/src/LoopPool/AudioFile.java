@@ -7,12 +7,14 @@ import java.net.*;
 
 public class AudioFile extends Thread {
 
+    String fileName;
+
     AudioFile() {
     }
-
+//file:///C:/Users/kamonson17/Documents/GitHub/Looppool/JavaApplication4/src/LoopPool/test.wav
     public void getAudio() {
         try {
-            URL u = new URL("test.wav");
+            URL u = new URL("file:///C:/Users/kamonson17/Documents/GitHub/Looppool/JavaApplication4/src/LoopPool/test.wav");
             AudioClip wav = Applet.newAudioClip(u);
             wav.play();
         } catch (Exception ex) {
