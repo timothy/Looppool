@@ -3,7 +3,6 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package LoopPool;
 
 import java.io.File;
@@ -15,20 +14,21 @@ import javax.swing.JFileChooser;
  *
  * @author kamonson17 And Timothy
  */
+class MyCustomFilter extends javax.swing.filechooser.FileFilter {
 
- class MyCustomFilter extends javax.swing.filechooser.FileFilter {
-        @Override
-        public boolean accept(File file) {
-            // Allow only directories, or files with ".txt" extension
-            return file.isDirectory() || file.getAbsolutePath().endsWith(".txt");
-        }
-        @Override
-        public String getDescription() {
-            // This description will be displayed in the dialog,
-            // hard-coded = ugly, should be done via I18N
-            return "Text documents (*.txt)";
-        }
-    } 
+    @Override
+    public boolean accept(File file) {
+        // Allow only directories, or files with ".txt" extension
+        return file.isDirectory() || file.getAbsolutePath().endsWith(".txt");
+    }
+
+    @Override
+    public String getDescription() {
+        // This description will be displayed in the dialog,
+        // hard-coded = ugly, should be done via I18N
+        return "Text documents (*.txt)";
+    }
+}
 
 public class LoopPoolGUI extends javax.swing.JFrame {
 
@@ -38,6 +38,7 @@ public class LoopPoolGUI extends javax.swing.JFrame {
     public LoopPoolGUI() {
         initComponents();
     }
+    AudioFile a = new AudioFile();
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -150,12 +151,10 @@ public class LoopPoolGUI extends javax.swing.JFrame {
         int returnVal = fileChooser.showOpenDialog(this);
         if (returnVal == JFileChooser.APPROVE_OPTION) {
             File file = fileChooser.getSelectedFile();
-            try {
-                // What to do with the file, e.g. display it in a TextArea
-                textarea.read(new FileReader(file.getAbsolutePath()), null);
-            } catch (IOException ex) {
-                System.out.println("problem accessing file" + file.getAbsolutePath());
-            }
+
+            // What to do with the file, e.g. display it in a TextArea
+            a.getAudio(file.getAbsolutePath());
+
         } else {
             System.out.println("File access cancelled by user.");
         }

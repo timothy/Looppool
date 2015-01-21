@@ -12,9 +12,11 @@ public class AudioFile extends Thread {
     AudioFile() {
     }
 //file:///C:/Users/kamonson17/Documents/GitHub/Looppool/JavaApplication4/src/LoopPool/test.wav
-    public void getAudio() {
+   
+    
+    public void getAudio(String fileLoc) {
         try {
-            URL u = new URL("file:///C:/Users/kamonson17/Documents/GitHub/Looppool/JavaApplication4/src/LoopPool/test.wav");
+            URL u = new URL(fileLoc);
             AudioClip wav = Applet.newAudioClip(u);
             wav.play();
         } catch (Exception ex) {
