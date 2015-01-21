@@ -8,6 +8,7 @@ package LoopPool;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.Vector;
 import javax.swing.JFileChooser;
 
 /**
@@ -35,10 +36,26 @@ public class LoopPoolGUI extends javax.swing.JFrame {
     /**
      * Creates new form LoopPoolGUI
      */
+    AudioFile a = new AudioFile();
+    
+    Vector<AudioFile> v = new Vector();
+
     public LoopPoolGUI() {
         initComponents();
     }
-    AudioFile a = new AudioFile();
+
+    void importFile() {
+        int returnVal = fileChooser.showOpenDialog(this);
+        if (returnVal == JFileChooser.APPROVE_OPTION) {
+            File file = fileChooser.getSelectedFile();
+
+            // What to do with the file, e.g. display it in a TextArea
+            a = new AudioFile(file.getAbsolutePath());
+
+        } else {
+            System.out.println("File access cancelled by user.");
+        }
+    }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -148,16 +165,8 @@ public class LoopPoolGUI extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void OpenActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_OpenActionPerformed
-        int returnVal = fileChooser.showOpenDialog(this);
-        if (returnVal == JFileChooser.APPROVE_OPTION) {
-            File file = fileChooser.getSelectedFile();
-
-            // What to do with the file, e.g. display it in a TextArea
-            a.getAudio(file.getAbsolutePath());
-
-        } else {
-            System.out.println("File access cancelled by user.");
-        }
+        importFile();
+       // jTextField1.setText(a.sLength());
     }//GEN-LAST:event_OpenActionPerformed
 
     private void ExitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ExitActionPerformed
