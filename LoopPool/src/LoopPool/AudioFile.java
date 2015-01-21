@@ -41,7 +41,7 @@ public class AudioFile extends Thread {
         }
     }
 
-    String sLength() {
+    String FileLengthS() {
         return String.valueOf(getLegth());
     }
 
