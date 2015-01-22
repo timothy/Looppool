@@ -5,6 +5,7 @@
  */
 package LoopPool;
 
+import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
@@ -43,7 +44,7 @@ public class LoopPoolGUI extends javax.swing.JFrame {
      * Creates new form LoopPoolGUI
      */
     AudioFile a = new AudioFile();
-
+    Boolean b = true;
     Vector<AudioFile> v = new Vector();
 
     public LoopPoolGUI() {
@@ -55,6 +56,21 @@ public class LoopPoolGUI extends javax.swing.JFrame {
         DefaultTableModel model = (DefaultTableModel) this.MusicTable.getModel();
         model.addRow(new Object[]{S});
     }
+
+    void Stop() {
+        for (int i = 0; i < v.size(); i++) {
+            v.get(i).AudioStop();
+        }
+
+    }
+
+    void Play() {
+
+        v.get(this.MusicTable.convertRowIndexToModel(
+                this.MusicTable.getSelectedRow())).AudioPlay();
+
+    }
+
 //
 //    public void ClearTable() {
 //        DefaultTableModel model = (DefaultTableModel) this.MusicTable.getModel();
@@ -62,7 +78,6 @@ public class LoopPoolGUI extends javax.swing.JFrame {
 //            model.removeRow(i);
 //        }
 //    }
-
     void importFile() {
         int returnVal = fileChooser.showOpenDialog(this);
         if (returnVal == JFileChooser.APPROVE_OPTION) {
@@ -109,6 +124,11 @@ public class LoopPoolGUI extends javax.swing.JFrame {
                 PlayBActionPerformed(evt);
             }
         });
+        PlayB.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                PlayBKeyTyped(evt);
+            }
+        });
 
         RecordB.setText("Record");
 
@@ -129,6 +149,17 @@ public class LoopPoolGUI extends javax.swing.JFrame {
                 "Title 1"
             }
         ));
+        MusicTable.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                MusicTableKeyPressed(evt);
+            }
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                MusicTableKeyReleased(evt);
+            }
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                MusicTableKeyTyped(evt);
+            }
+        });
         jScrollPane1.setViewportView(MusicTable);
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
@@ -233,33 +264,51 @@ public class LoopPoolGUI extends javax.swing.JFrame {
     }//GEN-LAST:event_ExitActionPerformed
 
     private void StopBActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_StopBActionPerformed
-        for (int i = 0; i < v.size(); i++) {
-            v.get(i).AudioStop();
-        } // TODO add your handling code here:
+        Stop();
     }//GEN-LAST:event_StopBActionPerformed
 
     private void PlayBActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_PlayBActionPerformed
-        v.get(this.MusicTable.convertRowIndexToModel(this.MusicTable.getSelectedRow())).AudioPlay();
+        Play();
     }//GEN-LAST:event_PlayBActionPerformed
 
     private void ExportBActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ExportBActionPerformed
         try {
-            for (int i = 0; i < v.size() - 1; i++) {
+            // for (int i = 0; i < v.size() - 1; i++) {
 //                AudioInputStream clip1 = AudioSystem.getAudioInputStream(new File(v.get(i).getLocation()));
 //                AudioInputStream clip2 = AudioSystem.getAudioInputStream(new File(v.get(i + 1).getLocation()));
-                AudioInputStream clip1 = AudioSystem.getAudioInputStream(new File(v.get(this.MusicTable.convertRowIndexToModel(this.MusicTable.getSelectedRow())).getLocation()));
-                AudioInputStream clip2 = AudioSystem.getAudioInputStream(new File(v.get(this.MusicTable.convertRowIndexToModel(this.MusicTable.getSelectedRow())).getLocation()));
-                AudioInputStream appendedFiles
-                        = new AudioInputStream(
-                                new SequenceInputStream(clip1, clip2),
-                                clip1.getFormat(),
-                                clip1.getFrameLength() + clip2.getFrameLength());
-                AudioSystem.write(appendedFiles, AudioFileFormat.Type.WAVE, new File("C:\\Users\\kamonson17\\Desktop\\newwav.wav"));
-            }
+            AudioInputStream clip1 = AudioSystem.getAudioInputStream(new File(v.get(this.MusicTable.convertRowIndexToModel(this.MusicTable.getSelectedRow())).getLocation()));
+            AudioInputStream clip2 = AudioSystem.getAudioInputStream(new File(v.get(this.MusicTable.convertRowIndexToModel(this.MusicTable.getSelectedRow())).getLocation()));
+            AudioInputStream appendedFiles
+                    = new AudioInputStream(
+                            new SequenceInputStream(clip1, clip2),
+                            clip1.getFormat(),
+                            clip1.getFrameLength() + clip2.getFrameLength());
+            AudioSystem.write(appendedFiles, AudioFileFormat.Type.WAVE, new File("C:\\Users\\kamonson17\\Desktop\\newwav.wav"));
+
         } catch (Exception Ex) {
             Ex.printStackTrace();
         }
     }//GEN-LAST:event_ExportBActionPerformed
+
+    private void PlayBKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_PlayBKeyTyped
+        Play();
+    }//GEN-LAST:event_PlayBKeyTyped
+
+    private void MusicTableKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_MusicTableKeyTyped
+        // PlayBKeyTyped(evt);
+    }//GEN-LAST:event_MusicTableKeyTyped
+
+    private void MusicTableKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_MusicTableKeyPressed
+        if (b) {
+            b = false;
+            Play();
+        }
+    }//GEN-LAST:event_MusicTableKeyPressed
+
+    private void MusicTableKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_MusicTableKeyReleased
+        Stop();
+        b = true;
+    }//GEN-LAST:event_MusicTableKeyReleased
 
     /**
      * @param args the command line arguments
