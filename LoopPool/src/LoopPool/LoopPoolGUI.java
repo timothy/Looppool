@@ -8,7 +8,11 @@ package LoopPool;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.SequenceInputStream;
 import java.util.Vector;
+import javax.sound.sampled.AudioFileFormat;
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
 import javax.swing.DefaultListModel;
 import javax.swing.JFileChooser;
 import javax.swing.table.DefaultTableModel;
@@ -109,6 +113,11 @@ public class LoopPoolGUI extends javax.swing.JFrame {
         RecordB.setText("Record");
 
         ExportB.setText("Export");
+        ExportB.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ExportBActionPerformed(evt);
+            }
+        });
 
         jButton4.setText("Chang Start Time");
 
@@ -224,14 +233,33 @@ public class LoopPoolGUI extends javax.swing.JFrame {
     }//GEN-LAST:event_ExitActionPerformed
 
     private void StopBActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_StopBActionPerformed
-       for (int i = 0; i < v.size(); i++){
-       v.get(i).AudioStop();
-       } // TODO add your handling code here:
+        for (int i = 0; i < v.size(); i++) {
+            v.get(i).AudioStop();
+        } // TODO add your handling code here:
     }//GEN-LAST:event_StopBActionPerformed
 
     private void PlayBActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_PlayBActionPerformed
-    v.get(this.MusicTable.convertRowIndexToModel(this.MusicTable.getSelectedRow())).AudioPlay();
+        v.get(this.MusicTable.convertRowIndexToModel(this.MusicTable.getSelectedRow())).AudioPlay();
     }//GEN-LAST:event_PlayBActionPerformed
+
+    private void ExportBActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ExportBActionPerformed
+        try {
+            for (int i = 0; i < v.size() - 1; i++) {
+//                AudioInputStream clip1 = AudioSystem.getAudioInputStream(new File(v.get(i).getLocation()));
+//                AudioInputStream clip2 = AudioSystem.getAudioInputStream(new File(v.get(i + 1).getLocation()));
+                AudioInputStream clip1 = AudioSystem.getAudioInputStream(new File(v.get(this.MusicTable.convertRowIndexToModel(this.MusicTable.getSelectedRow())).getLocation()));
+                AudioInputStream clip2 = AudioSystem.getAudioInputStream(new File(v.get(this.MusicTable.convertRowIndexToModel(this.MusicTable.getSelectedRow())).getLocation()));
+                AudioInputStream appendedFiles
+                        = new AudioInputStream(
+                                new SequenceInputStream(clip1, clip2),
+                                clip1.getFormat(),
+                                clip1.getFrameLength() + clip2.getFrameLength());
+                AudioSystem.write(appendedFiles, AudioFileFormat.Type.WAVE, new File("C:\\Users\\kamonson17\\Desktop\\newwav.wav"));
+            }
+        } catch (Exception Ex) {
+            Ex.printStackTrace();
+        }
+    }//GEN-LAST:event_ExportBActionPerformed
 
     /**
      * @param args the command line arguments
