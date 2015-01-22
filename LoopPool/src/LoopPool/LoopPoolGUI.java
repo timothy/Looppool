@@ -9,7 +9,9 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.Vector;
+import javax.swing.DefaultListModel;
 import javax.swing.JFileChooser;
+import javax.swing.table.DefaultTableModel;
 
 /**
  *
@@ -20,14 +22,14 @@ class MyCustomFilter extends javax.swing.filechooser.FileFilter {
     @Override
     public boolean accept(File file) {
         // Allow only directories, or files with ".txt" extension
-        return file.isDirectory() || file.getAbsolutePath().endsWith(".txt");
+        return file.isDirectory() || file.getAbsolutePath().endsWith(".wav");
     }
 
     @Override
     public String getDescription() {
         // This description will be displayed in the dialog,
         // hard-coded = ugly, should be done via I18N
-        return "Text documents (*.txt)";
+        return "Text documents (*.wav)";
     }
 }
 
@@ -37,20 +39,33 @@ public class LoopPoolGUI extends javax.swing.JFrame {
      * Creates new form LoopPoolGUI
      */
     AudioFile a = new AudioFile();
-    
+
     Vector<AudioFile> v = new Vector();
 
     public LoopPoolGUI() {
         initComponents();
+
     }
+
+    public void addItem(AudioFile S) {
+        DefaultTableModel model = (DefaultTableModel) this.MusicTable.getModel();
+        model.addRow(new Object[]{S});
+    }
+//
+//    public void ClearTable() {
+//        DefaultTableModel model = (DefaultTableModel) this.MusicTable.getModel();
+//        for (int i = 0; i < model.getRowCount(); i++) {
+//            model.removeRow(i);
+//        }
+//    }
 
     void importFile() {
         int returnVal = fileChooser.showOpenDialog(this);
         if (returnVal == JFileChooser.APPROVE_OPTION) {
             File file = fileChooser.getSelectedFile();
-
-            // What to do with the file, e.g. display it in a TextArea
-            a = new AudioFile(file.getAbsolutePath());
+            //this.a.setName(fileChooser.getName(file));
+            v.add(new AudioFile(file.getAbsolutePath()));
+            addItem(v.get(v.size() - 1));
 
         } else {
             System.out.println("File access cancelled by user.");
@@ -74,6 +89,9 @@ public class LoopPoolGUI extends javax.swing.JFrame {
         jButton4 = new javax.swing.JButton();
         jTabbedPane1 = new javax.swing.JTabbedPane();
         jPanel1 = new javax.swing.JPanel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        MusicTable = new javax.swing.JTable();
+        StopB = new javax.swing.JButton();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         Open = new javax.swing.JMenuItem();
@@ -82,6 +100,11 @@ public class LoopPoolGUI extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         PlayB.setText("Play");
+        PlayB.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                PlayBActionPerformed(evt);
+            }
+        });
 
         RecordB.setText("Record");
 
@@ -89,21 +112,45 @@ public class LoopPoolGUI extends javax.swing.JFrame {
 
         jButton4.setText("Chang Start Time");
 
+        MusicTable.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                "Title 1"
+            }
+        ));
+        jScrollPane1.setViewportView(MusicTable);
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 719, Short.MAX_VALUE)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 710, Short.MAX_VALUE)
+                .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 211, Short.MAX_VALUE)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 195, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab("Audio file Order", jPanel1);
 
+        StopB.setText("Stop");
+        StopB.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                StopBActionPerformed(evt);
+            }
+        });
+
         jMenu1.setText("File");
 
+        Open.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_A, java.awt.event.InputEvent.SHIFT_MASK | java.awt.event.InputEvent.CTRL_MASK));
         Open.setText("Open Audio File");
         Open.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -138,10 +185,12 @@ public class LoopPoolGUI extends javax.swing.JFrame {
                         .addComponent(PlayB)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(RecordB)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(ExportB)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 319, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(ExportB, javax.swing.GroupLayout.PREFERRED_SIZE, 69, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(StopB)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jTextField1)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jButton4)
                         .addGap(19, 19, 19))))
@@ -155,10 +204,11 @@ public class LoopPoolGUI extends javax.swing.JFrame {
                     .addComponent(RecordB)
                     .addComponent(ExportB)
                     .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton4))
+                    .addComponent(jButton4)
+                    .addComponent(StopB))
                 .addGap(29, 29, 29)
                 .addComponent(jTabbedPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 239, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(189, Short.MAX_VALUE))
+                .addContainerGap(159, Short.MAX_VALUE))
         );
 
         pack();
@@ -166,12 +216,22 @@ public class LoopPoolGUI extends javax.swing.JFrame {
 
     private void OpenActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_OpenActionPerformed
         importFile();
-       // jTextField1.setText(a.sLength());
+        // jTextField1.setText(a.sLength());
     }//GEN-LAST:event_OpenActionPerformed
 
     private void ExitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ExitActionPerformed
         System.exit(0);
     }//GEN-LAST:event_ExitActionPerformed
+
+    private void StopBActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_StopBActionPerformed
+       for (int i = 0; i < v.size(); i++){
+       v.get(i).AudioStop();
+       } // TODO add your handling code here:
+    }//GEN-LAST:event_StopBActionPerformed
+
+    private void PlayBActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_PlayBActionPerformed
+    v.get(this.MusicTable.convertRowIndexToModel(this.MusicTable.getSelectedRow())).AudioPlay();
+    }//GEN-LAST:event_PlayBActionPerformed
 
     /**
      * @param args the command line arguments
@@ -211,14 +271,17 @@ public class LoopPoolGUI extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenuItem Exit;
     private javax.swing.JButton ExportB;
+    private javax.swing.JTable MusicTable;
     private javax.swing.JMenuItem Open;
     private javax.swing.JButton PlayB;
     private javax.swing.JButton RecordB;
+    private javax.swing.JButton StopB;
     private javax.swing.JFileChooser fileChooser;
     private javax.swing.JButton jButton4;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JTextField jTextField1;
     // End of variables declaration//GEN-END:variables

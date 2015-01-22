@@ -7,11 +7,11 @@ import java.net.*;
 
 public class AudioFile extends Thread {
 
-    String fileLoc;
-    AudioClip audioFile;
-    String name;
-    String type;
-    Double length;
+    private String fileLoc;
+    private AudioClip audioFile;
+    private String name;
+    private String type;
+    private Double length;
 
     AudioFile() {
     }
@@ -27,7 +27,7 @@ public class AudioFile extends Thread {
         }
     }
 
-    double getLegth() {
+    public double getLegth() {
         File file = new File(this.fileLoc);
         try {
             AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(file);
@@ -41,8 +41,20 @@ public class AudioFile extends Thread {
         }
     }
 
-    String sLength() {
+    public String sLength() {
         return String.valueOf(getLegth());
+    }
+
+    public void AudioPlay() {
+        this.audioFile.play();
+    }
+
+    public void AudioStop() {
+        this.audioFile.stop();
+    }
+
+    public void setType(String t) {
+        this.type = t;
     }
 
 }
