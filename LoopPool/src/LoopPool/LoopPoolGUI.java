@@ -5,6 +5,7 @@
  */
 package LoopPool;
 
+import java.awt.dnd.DropTarget;
 import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.FileReader;
@@ -49,6 +50,8 @@ public class LoopPoolGUI extends javax.swing.JFrame {
 
     public LoopPoolGUI() {
         initComponents();
+        this.TableCombine.setDragEnabled(true);
+        
     }
 
     public void addItem(AudioFile S) {
@@ -59,6 +62,11 @@ public class LoopPoolGUI extends javax.swing.JFrame {
             DefaultTableModel model = (DefaultTableModel) this.MusicTable2.getModel();
             model.addRow(new Object[]{S});
         }
+    }
+
+    public void addToCombine(AudioFile S) {
+        DefaultTableModel model = (DefaultTableModel) this.TableCombine.getModel();
+        model.addRow(new Object[]{S});
     }
 
     void Stop() {
@@ -128,6 +136,8 @@ public class LoopPoolGUI extends javax.swing.JFrame {
         jScrollPane2 = new javax.swing.JScrollPane();
         MusicTable2 = new javax.swing.JTable();
         StopB = new javax.swing.JButton();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        TableCombine = new javax.swing.JTable();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         Open = new javax.swing.JMenuItem();
@@ -163,9 +173,11 @@ public class LoopPoolGUI extends javax.swing.JFrame {
 
             },
             new String [] {
-                "Title 1"
+                "Layer 1"
             }
         ));
+        MusicTable.setDragEnabled(true);
+        MusicTable.setDropMode(javax.swing.DropMode.INSERT_ROWS);
         MusicTable.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
                 MusicTableKeyPressed(evt);
@@ -203,9 +215,11 @@ public class LoopPoolGUI extends javax.swing.JFrame {
 
             },
             new String [] {
-                "Title 1"
+                "Layer 2"
             }
         ));
+        MusicTable2.setDragEnabled(true);
+        MusicTable2.setDropMode(javax.swing.DropMode.INSERT_ROWS);
         MusicTable2.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
                 MusicTable2KeyPressed(evt);
@@ -245,6 +259,25 @@ public class LoopPoolGUI extends javax.swing.JFrame {
             }
         });
 
+        TableCombine.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null}
+            },
+            new String [] {
+                "Loops to Combine"
+            }
+        ));
+        TableCombine.setToolTipText("");
+        TableCombine.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+        TableCombine.setDragEnabled(true);
+        TableCombine.setDropMode(javax.swing.DropMode.INSERT_ROWS);
+        TableCombine.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseReleased(java.awt.event.MouseEvent evt) {
+                TableCombineMouseReleased(evt);
+            }
+        });
+        jScrollPane3.setViewportView(TableCombine);
+
         jMenu1.setText("File");
 
         Open.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_A, java.awt.event.InputEvent.SHIFT_MASK | java.awt.event.InputEvent.CTRL_MASK));
@@ -276,9 +309,6 @@ public class LoopPoolGUI extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(jTabbedPane1)
-                        .addContainerGap())
-                    .addGroup(layout.createSequentialGroup()
                         .addComponent(PlayB)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(RecordB)
@@ -290,7 +320,13 @@ public class LoopPoolGUI extends javax.swing.JFrame {
                         .addComponent(jTextField1)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jButton4)
-                        .addGap(19, 19, 19))))
+                        .addGap(19, 19, 19))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addComponent(jTabbedPane1)
+                        .addContainerGap())
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addComponent(jScrollPane3)
+                        .addContainerGap())))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -305,7 +341,9 @@ public class LoopPoolGUI extends javax.swing.JFrame {
                     .addComponent(StopB))
                 .addGap(29, 29, 29)
                 .addComponent(jTabbedPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 239, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(159, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 131, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pack();
@@ -391,6 +429,10 @@ public class LoopPoolGUI extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_MusicTable2KeyTyped
 
+    private void TableCombineMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_TableCombineMouseReleased
+        // TODO add your handling code here:
+    }//GEN-LAST:event_TableCombineMouseReleased
+
     /**
      * @param args the command line arguments
      */
@@ -435,6 +477,7 @@ public class LoopPoolGUI extends javax.swing.JFrame {
     private javax.swing.JButton PlayB;
     private javax.swing.JButton RecordB;
     private javax.swing.JButton StopB;
+    private javax.swing.JTable TableCombine;
     private javax.swing.JFileChooser fileChooser;
     private javax.swing.JButton jButton4;
     private javax.swing.JMenu jMenu1;
@@ -443,6 +486,7 @@ public class LoopPoolGUI extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JTextField jTextField1;
     // End of variables declaration//GEN-END:variables
