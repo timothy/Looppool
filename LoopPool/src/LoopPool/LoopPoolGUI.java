@@ -49,12 +49,16 @@ public class LoopPoolGUI extends javax.swing.JFrame {
 
     public LoopPoolGUI() {
         initComponents();
-
     }
 
     public void addItem(AudioFile S) {
-        DefaultTableModel model = (DefaultTableModel) this.MusicTable.getModel();
-        model.addRow(new Object[]{S});
+        if (this.jPanel1.isShowing()) {
+            DefaultTableModel model = (DefaultTableModel) this.MusicTable.getModel();
+            model.addRow(new Object[]{S});
+        } else if (this.jPanel2.isShowing()) {
+            DefaultTableModel model = (DefaultTableModel) this.MusicTable2.getModel();
+            model.addRow(new Object[]{S});
+        }
     }
 
     void Stop() {
@@ -65,19 +69,29 @@ public class LoopPoolGUI extends javax.swing.JFrame {
     }
 
     void Play() {
-
-        v.get(this.MusicTable.convertRowIndexToModel(
-                this.MusicTable.getSelectedRow())).AudioPlay();
-
+        if (MusicTable.getSelectedRow() >= 0 && MusicTable2.getSelectedRow() < 0) {
+            v.get(this.MusicTable.convertRowIndexToModel(
+                    this.MusicTable.getSelectedRow())).AudioPlay();
+        }
+        if (MusicTable.getSelectedRow() >= 0 && MusicTable2.getSelectedRow() >= 0) {
+            v.get(this.MusicTable.convertRowIndexToModel(
+                    this.MusicTable.getSelectedRow())).AudioPlay();
+            v.get(this.MusicTable2.convertRowIndexToModel(
+                    this.MusicTable2.getSelectedRow())).AudioPlay();
+        }
+        if (MusicTable.getSelectedRow() < 0 && MusicTable2.getSelectedRow() >= 0) {
+            v.get(this.MusicTable2.convertRowIndexToModel(
+                    this.MusicTable2.getSelectedRow())).AudioPlay();
+        }
     }
 
-//
-//    public void ClearTable() {
-//        DefaultTableModel model = (DefaultTableModel) this.MusicTable.getModel();
-//        for (int i = 0; i < model.getRowCount(); i++) {
-//            model.removeRow(i);
-//        }
-//    }
+    public void ClearRow(int r, javax.swing.JTable t) {
+        DefaultTableModel model = (DefaultTableModel) t.getModel();
+        {
+            model.removeRow(r);
+        }
+    }
+
     void importFile() {
         int returnVal = fileChooser.showOpenDialog(this);
         if (returnVal == JFileChooser.APPROVE_OPTION) {
@@ -110,6 +124,9 @@ public class LoopPoolGUI extends javax.swing.JFrame {
         jPanel1 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         MusicTable = new javax.swing.JTable();
+        jPanel2 = new javax.swing.JPanel();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        MusicTable2 = new javax.swing.JTable();
         StopB = new javax.swing.JButton();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
@@ -179,7 +196,47 @@ public class LoopPoolGUI extends javax.swing.JFrame {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        jTabbedPane1.addTab("Audio file Order", jPanel1);
+        jTabbedPane1.addTab("Layer 1", jPanel1);
+
+        MusicTable2.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                "Title 1"
+            }
+        ));
+        MusicTable2.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                MusicTable2KeyPressed(evt);
+            }
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                MusicTable2KeyReleased(evt);
+            }
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                MusicTable2KeyTyped(evt);
+            }
+        });
+        jScrollPane2.setViewportView(MusicTable2);
+
+        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
+        jPanel2.setLayout(jPanel2Layout);
+        jPanel2Layout.setHorizontalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 710, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+        jPanel2Layout.setVerticalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 195, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
+        jTabbedPane1.addTab("Layer 2", jPanel2);
 
         StopB.setText("Stop");
         StopB.addActionListener(new java.awt.event.ActionListener() {
@@ -295,20 +352,44 @@ public class LoopPoolGUI extends javax.swing.JFrame {
     }//GEN-LAST:event_PlayBKeyTyped
 
     private void MusicTableKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_MusicTableKeyTyped
-        // PlayBKeyTyped(evt);
+        char c = evt.getKeyChar();
+        if (c == KeyEvent.VK_DELETE) {
+            this.ClearRow(this.MusicTable.getSelectedRow(), this.MusicTable);
+        }
     }//GEN-LAST:event_MusicTableKeyTyped
 
+    private void MusicTableKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_MusicTableKeyReleased
+        char c = evt.getKeyChar();
+        if (c == KeyEvent.VK_SPACE) {
+            Stop();
+            b = true;
+        }
+    }//GEN-LAST:event_MusicTableKeyReleased
+
     private void MusicTableKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_MusicTableKeyPressed
-        if (b) {
-            b = false;
-            Play();
+        char c = evt.getKeyChar();
+        if (c == KeyEvent.VK_SPACE) {
+            if (b) {
+                b = false;
+                Play();
+            }
         }
     }//GEN-LAST:event_MusicTableKeyPressed
 
-    private void MusicTableKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_MusicTableKeyReleased
-        Stop();
-        b = true;
-    }//GEN-LAST:event_MusicTableKeyReleased
+    private void MusicTable2KeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_MusicTable2KeyPressed
+        char c = evt.getKeyChar();
+        if (c == KeyEvent.VK_DELETE) {
+            this.ClearRow(this.MusicTable2.getSelectedRow(), this.MusicTable2);
+        }
+    }//GEN-LAST:event_MusicTable2KeyPressed
+
+    private void MusicTable2KeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_MusicTable2KeyReleased
+        // TODO add your handling code here:
+    }//GEN-LAST:event_MusicTable2KeyReleased
+
+    private void MusicTable2KeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_MusicTable2KeyTyped
+        // TODO add your handling code here:
+    }//GEN-LAST:event_MusicTable2KeyTyped
 
     /**
      * @param args the command line arguments
@@ -349,6 +430,7 @@ public class LoopPoolGUI extends javax.swing.JFrame {
     private javax.swing.JMenuItem Exit;
     private javax.swing.JButton ExportB;
     private javax.swing.JTable MusicTable;
+    private javax.swing.JTable MusicTable2;
     private javax.swing.JMenuItem Open;
     private javax.swing.JButton PlayB;
     private javax.swing.JButton RecordB;
@@ -358,7 +440,9 @@ public class LoopPoolGUI extends javax.swing.JFrame {
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JTextField jTextField1;
     // End of variables declaration//GEN-END:variables
