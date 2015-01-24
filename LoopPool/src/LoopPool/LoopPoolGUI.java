@@ -5,18 +5,17 @@
  */
 package LoopPool;
 
-import java.awt.dnd.DropTarget;
 import java.awt.event.KeyEvent;
 import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
 import java.io.SequenceInputStream;
 import java.util.Vector;
 import javax.sound.sampled.AudioFileFormat;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
-import javax.swing.DefaultListModel;
+import javax.swing.DropMode;
 import javax.swing.JFileChooser;
+import javax.swing.ListSelectionModel;
+import javax.swing.TransferHandler;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -47,11 +46,57 @@ public class LoopPoolGUI extends javax.swing.JFrame {
     AudioFile a = new AudioFile();
     Boolean b = true;
     Vector<AudioFile> v = new Vector();
+    //TableModel tm = new TableModel();
+//    TableTransferHandler th = new TableTransferHandler(this.TableCombine);
+//    TableTransferHandler th1 = new TableTransferHandler(this.MusicTable);
+//    TableTransferHandler th2 = new TableTransferHandler(this.MusicTable2);
+    //TableTransferHandler handler = new TableTransferHandler(this.MusicTable);
+
+    private final TransferHandler handler = new TableRowTransferHandler();
 
     public LoopPoolGUI() {
         initComponents();
         this.TableCombine.setDragEnabled(true);
-        
+
+        this.MusicTable.getSelectionModel().setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
+        this.MusicTable.setTransferHandler(handler);
+        this.MusicTable.setDropMode(DropMode.INSERT_ROWS);
+        this.MusicTable.setDragEnabled(true);
+        this.MusicTable.setFillsViewportHeight(true);
+
+        /*        this.MusicTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+         this.MusicTable.setDragEnabled(true);
+         this.MusicTable.setDropMode(DropMode.INSERT_ROWS);
+         this.MusicTable.setFillsViewportHeight(true);
+         this.MusicTable.setTransferHandler(new TableTransferHandler(MusicTable));
+         */
+        // JScrollPane scrollPaneA = new JScrollPane(MusicTable);
+        this.MusicTable2.getSelectionModel().setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
+        this.MusicTable2.setTransferHandler(handler);
+        this.MusicTable2.setDropMode(DropMode.INSERT_ROWS);
+        this.MusicTable2.setDragEnabled(true);
+        this.MusicTable2.setFillsViewportHeight(true);
+
+//        this.MusicTable2.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+//        this.MusicTable2.setDragEnabled(true);
+//        this.MusicTable2.setDropMode(DropMode.INSERT_ROWS);
+//        this.MusicTable2.setFillsViewportHeight(true);
+//        this.MusicTable2.setTransferHandler(new TableTransferHandler(MusicTable2));
+        this.TableCombine.getSelectionModel().setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
+        this.TableCombine.setTransferHandler(handler);
+        this.TableCombine.setDropMode(DropMode.INSERT_ROWS);
+        this.TableCombine.setDragEnabled(true);
+        this.TableCombine.setFillsViewportHeight(true);
+
+//        this.TableCombine.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+//        this.TableCombine.setDragEnabled(true);
+//        this.TableCombine.setDropMode(DropMode.INSERT_ROWS);
+//        this.TableCombine.setFillsViewportHeight(true);
+//        this.TableCombine.setTransferHandler(new TableTransferHandler(MusicTable2));
+//        this.TableCombine.setTransferHandler(handler);
+//        this.MusicTable2.setTransferHandler(handler);
+//        this.MusicTable.setTransferHandler(handler);
+        // JScrollPane scrollPaneb = new JScrollPane(MusicTable2);
     }
 
     public void addItem(AudioFile S) {
@@ -368,18 +413,18 @@ public class LoopPoolGUI extends javax.swing.JFrame {
 
     private void ExportBActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ExportBActionPerformed
         try {
-            // for (int i = 0; i < v.size() - 1; i++) {
-//                AudioInputStream clip1 = AudioSystem.getAudioInputStream(new File(v.get(i).getLocation()));
-//                AudioInputStream clip2 = AudioSystem.getAudioInputStream(new File(v.get(i + 1).getLocation()));
-            AudioInputStream clip1 = AudioSystem.getAudioInputStream(new File(v.get(this.MusicTable.convertRowIndexToModel(this.MusicTable.getSelectedRow())).getLocation()));
-            AudioInputStream clip2 = AudioSystem.getAudioInputStream(new File(v.get(this.MusicTable.convertRowIndexToModel(this.MusicTable.getSelectedRow())).getLocation()));
-            AudioInputStream appendedFiles
-                    = new AudioInputStream(
-                            new SequenceInputStream(clip1, clip2),
-                            clip1.getFormat(),
-                            clip1.getFrameLength() + clip2.getFrameLength());
-            AudioSystem.write(appendedFiles, AudioFileFormat.Type.WAVE, new File("C:\\Users\\kamonson17\\Desktop\\newwav.wav"));
+            for (int i = 0; i < this.TableCombine.getRowCount(); i++) {
+                
+          AudioInputStream clip1 = AudioSystem.getAudioInputStream(new File(v.get(this.TableCombine.convertRowIndexToModel(this.TableCombine.getSelectedRow())).getLocation()));
+        AudioInputStream clip2 = AudioSystem.getAudioInputStream(new File(v.get(this.TableCombine.convertRowIndexToModel(this.TableCombine.getSelectedRow())).getLocation()));
+                AudioInputStream appendedFiles
+                        = new AudioInputStream(
+                                new SequenceInputStream(clip1, clip2),
+                                clip1.getFormat(),
+                                clip1.getFrameLength() + clip2.getFrameLength());
+                AudioSystem.write(appendedFiles, AudioFileFormat.Type.WAVE, new File("newwav.wav"));
 
+            }
         } catch (Exception Ex) {
             Ex.printStackTrace();
         }
