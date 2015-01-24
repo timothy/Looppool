@@ -17,7 +17,10 @@ public class AudioFile extends InputStream {
 
     AudioFile() {
     }
-
+/**
+ * 
+ * @param s Takes the file location and imports it into an audio file to be used throughout this class
+ */
     AudioFile(String s) {
         this.fileLoc = s;
         try {
@@ -28,7 +31,10 @@ public class AudioFile extends InputStream {
             System.out.println("Ah crap...something went wrong in the audio inport" + ex.toString());
         }
     }
-
+/**
+ * 
+ * @return Returns the frame length of the audio file in the form of a long
+ */
     public long getFrameLength() {
         File file = new File(this.fileLoc);
         try {
@@ -43,27 +49,44 @@ public class AudioFile extends InputStream {
             return this.frames;
         }
     }
-
+/**
+ * 
+ * @return Returns the frame length of the audio file in the form of a String
+ */
     public String sLength() {
         return String.valueOf(getFrameLength());
     }
-
+/**
+ * Plays the audio file
+ */
     public void AudioPlay() {
         this.audioFile.play();
     }
-
+/**
+ * Stops the Audio file
+ */
     public void AudioStop() {
         this.audioFile.stop();
     }
-
+/**
+ * 
+ * @param t sets the type of audio file to be used
+ */
     public void setType(String t) {
         this.type = t;
     }
-
+/**
+ * 
+ * @return Returns a string representation of the file path
+ */
     public String getLocation() {
         return this.location;
     }
-
+/**
+ * 
+ * @return Required exception for Audio files
+ * @throws IOException 
+ */
     @Override
     public int read() throws IOException {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
