@@ -7,7 +7,11 @@ package LoopPool;
 
 import java.awt.event.KeyEvent;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.SequenceInputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Vector;
 import javax.sound.sampled.AudioFileFormat;
 import javax.sound.sampled.AudioInputStream;
@@ -44,9 +48,10 @@ public class LoopPoolGUI extends javax.swing.JFrame {
      * Creates new form LoopPoolGUI
      */
     AudioFile a = new AudioFile();
+    AudioFile a1 = new AudioFile();
     Boolean b = true;
     Vector<AudioFile> v = new Vector();
-
+    int row;
 
     private final TransferHandler handler = new TableRowTransferHandler();
 
@@ -60,13 +65,11 @@ public class LoopPoolGUI extends javax.swing.JFrame {
         this.MusicTable.setDragEnabled(true);
         this.MusicTable.setFillsViewportHeight(true);
 
-
         this.MusicTable2.getSelectionModel().setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
         this.MusicTable2.setTransferHandler(handler);
         this.MusicTable2.setDropMode(DropMode.INSERT_ROWS);
         this.MusicTable2.setDragEnabled(true);
         this.MusicTable2.setFillsViewportHeight(true);
-
 
         this.TableCombine.getSelectionModel().setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
         this.TableCombine.setTransferHandler(handler);
@@ -74,11 +77,10 @@ public class LoopPoolGUI extends javax.swing.JFrame {
         this.TableCombine.setDragEnabled(true);
         this.TableCombine.setFillsViewportHeight(true);
 
-
     }
 
     /**
-     * 
+     *
      * @param S is the AudioFile and puts it into the table that is showing
      */
     public void addItem(AudioFile S) {
@@ -100,39 +102,47 @@ public class LoopPoolGUI extends javax.swing.JFrame {
         }
 
     }
-/**
- * Plays the songs that are selected in the table
- */
+
+    /**
+     * Plays the songs that are selected in the table
+     */
     void Play() {
         if (MusicTable.getSelectedRow() >= 0 && MusicTable2.getSelectedRow() < 0) {
-            v.get(this.MusicTable.convertRowIndexToModel(
-                    this.MusicTable.getSelectedRow())).AudioPlay();
+            row = MusicTable.getSelectedRow();
+            a = (AudioFile) this.MusicTable.getValueAt(row, 0);
+            a.AudioPlay();
         }
         if (MusicTable.getSelectedRow() >= 0 && MusicTable2.getSelectedRow() >= 0) {
-            v.get(this.MusicTable.convertRowIndexToModel(
-                    this.MusicTable.getSelectedRow())).AudioPlay();
-            v.get(this.MusicTable2.convertRowIndexToModel(
-                    this.MusicTable2.getSelectedRow())).AudioPlay();
+            row = MusicTable.getSelectedRow();
+            a = (AudioFile) this.MusicTable.getValueAt(row, 0);
+            a.AudioPlay();
+            row = MusicTable2.getSelectedRow();
+            a = (AudioFile) this.MusicTable2.getValueAt(row, 0);
+            a.AudioPlay();
         }
         if (MusicTable.getSelectedRow() < 0 && MusicTable2.getSelectedRow() >= 0) {
-            v.get(this.MusicTable2.convertRowIndexToModel(
-                    this.MusicTable2.getSelectedRow())).AudioPlay();
+            row = MusicTable2.getSelectedRow();
+            a = (AudioFile) this.MusicTable2.getValueAt(row, 0);
+            a.AudioPlay();
         }
     }
-/**
- * 
- * @param r row position that is to be deleted
- * @param t the table that holds the row you want to delete
- */
+
+    /**
+     *
+     * @param r row position that is to be deleted
+     * @param t the table that holds the row you want to delete
+     */
     public void ClearRow(int r, javax.swing.JTable t) {
         DefaultTableModel model = (DefaultTableModel) t.getModel();
         {
             model.removeRow(r);
         }
     }
-/**
- * This will open the file chooser and import the selected audio files into a vector of audio files
- */
+
+    /**
+     * This will open the file chooser and import the selected audio files into
+     * a vector of audio files
+     */
     void importFile() {
         int returnVal = fileChooser.showOpenDialog(this);
         if (returnVal == JFileChooser.APPROVE_OPTION) {
@@ -191,6 +201,11 @@ public class LoopPoolGUI extends javax.swing.JFrame {
         });
 
         RecordB.setText("Record");
+        RecordB.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                RecordBActionPerformed(evt);
+            }
+        });
 
         ExportB.setText("Export");
         ExportB.addActionListener(new java.awt.event.ActionListener() {
@@ -294,7 +309,7 @@ public class LoopPoolGUI extends javax.swing.JFrame {
 
         TableCombine.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null}
+
             },
             new String [] {
                 "Loops to Combine"
@@ -382,77 +397,83 @@ public class LoopPoolGUI extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 /**
- * 
- * @param evt the event when the open button is clicked
- */
+     *
+     * @param evt the event when the open button is clicked
+     */
     private void OpenActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_OpenActionPerformed
         importFile();
         // jTextField1.setText(a.sLength());
     }//GEN-LAST:event_OpenActionPerformed
-/**
- * 
- * @param evt Event of the exit button click
- */
+    /**
+     *
+     * @param evt Event of the exit button click
+     */
     private void ExitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ExitActionPerformed
         System.exit(0);
     }//GEN-LAST:event_ExitActionPerformed
-/**
- * 
- * @param evt Event of the stop button click
- */
+    /**
+     *
+     * @param evt Event of the stop button click
+     */
     private void StopBActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_StopBActionPerformed
         Stop();
     }//GEN-LAST:event_StopBActionPerformed
-/**
- * 
- * @param evt Event of the play button click
- */
+    /**
+     *
+     * @param evt Event of the play button click
+     */
     private void PlayBActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_PlayBActionPerformed
         Play();
     }//GEN-LAST:event_PlayBActionPerformed
-/**
- * 
- * @param evt Event of the Export button click
- */
+    /**
+     * Finds elements from the tablecombine and loops through adding each to the
+     * conwav.wav file
+     *
+     * @param evt Event of the Export button click
+     */
     private void ExportBActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ExportBActionPerformed
         try {
             for (int i = 0; i < this.TableCombine.getRowCount(); i++) {
-                
-          AudioInputStream clip1 = AudioSystem.getAudioInputStream(new File(v.get(this.TableCombine.convertRowIndexToModel(this.TableCombine.getSelectedRow())).getLocation()));
-        AudioInputStream clip2 = AudioSystem.getAudioInputStream(new File(v.get(this.TableCombine.convertRowIndexToModel(this.TableCombine.getSelectedRow())).getLocation()));
+                a = (AudioFile) this.TableCombine.getValueAt(i, 0);
+
+                AudioInputStream clip1 = AudioSystem.getAudioInputStream(new File(a.getLocation()));
+
+                AudioInputStream clip2 = AudioSystem.getAudioInputStream(new File("conwav.wav"));
+
                 AudioInputStream appendedFiles
                         = new AudioInputStream(
                                 new SequenceInputStream(clip1, clip2),
                                 clip1.getFormat(),
                                 clip1.getFrameLength() + clip2.getFrameLength());
-                AudioSystem.write(appendedFiles, AudioFileFormat.Type.WAVE, new File("newwav.wav"));
+                AudioSystem.write(appendedFiles, AudioFileFormat.Type.WAVE, new File("conwav.wav"));
 
             }
         } catch (Exception Ex) {
             Ex.printStackTrace();
         }
     }//GEN-LAST:event_ExportBActionPerformed
-/**
- * 
- * @param evt Event of any key stroke while the play button is selected
- */
+    /**
+     *
+     * @param evt Event of any key stroke while the play button is selected
+     */
     private void PlayBKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_PlayBKeyTyped
         Play();
     }//GEN-LAST:event_PlayBKeyTyped
-/**
- * 
- * @param evt Event of any key stroke while table one is selected.. deletes the given row selected in the table
- */
+    /**
+     *
+     * @param evt Event of any key stroke while table one is selected.. deletes
+     * the given row selected in the table
+     */
     private void MusicTableKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_MusicTableKeyTyped
         char c = evt.getKeyChar();
         if (c == KeyEvent.VK_DELETE) {
             this.ClearRow(this.MusicTable.getSelectedRow(), this.MusicTable);
         }
     }//GEN-LAST:event_MusicTableKeyTyped
-/**
- * 
- * @param evt when space bar is released the music starts
- */
+    /**
+     *
+     * @param evt when space bar is released the music starts
+     */
     private void MusicTableKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_MusicTableKeyReleased
         char c = evt.getKeyChar();
         if (c == KeyEvent.VK_SPACE) {
@@ -460,10 +481,10 @@ public class LoopPoolGUI extends javax.swing.JFrame {
             b = true;
         }
     }//GEN-LAST:event_MusicTableKeyReleased
-/**
- * 
- * @param evt when space bar is pressed the music starts
- */
+    /**
+     *
+     * @param evt when space bar is pressed the music starts
+     */
     private void MusicTableKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_MusicTableKeyPressed
         char c = evt.getKeyChar();
         if (c == KeyEvent.VK_SPACE) {
@@ -473,10 +494,11 @@ public class LoopPoolGUI extends javax.swing.JFrame {
             }
         }
     }//GEN-LAST:event_MusicTableKeyPressed
-/**
- * 
- * @param evt vent of any key stroke while table two is selected.. deletes the given row selected in the table
- */
+    /**
+     *
+     * @param evt vent of any key stroke while table two is selected.. deletes
+     * the given row selected in the table
+     */
     private void MusicTable2KeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_MusicTable2KeyPressed
         char c = evt.getKeyChar();
         if (c == KeyEvent.VK_DELETE) {
@@ -495,6 +517,25 @@ public class LoopPoolGUI extends javax.swing.JFrame {
     private void TableCombineMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_TableCombineMouseReleased
         // TODO add your handling code here:
     }//GEN-LAST:event_TableCombineMouseReleased
+
+    private void RecordBActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_RecordBActionPerformed
+        try {
+            Path srcFile = Paths.get(v.get(this.MusicTable.convertRowIndexToModel(this.MusicTable.getSelectedRow())).getLocation());
+            Path srcFile2 = Paths.get(v.get(this.MusicTable2.convertRowIndexToModel(this.MusicTable2.getSelectedRow())).getLocation());
+            File dstFile = new File("newwav.wav");
+            try (FileOutputStream out = new FileOutputStream(dstFile)) {
+                byte[] src1 = Files.readAllBytes(srcFile);
+                byte[] src2 = Files.readAllBytes(srcFile2);
+                byte[] buf = new byte[src1.length - 44];
+                for (int i = 0; i < v.get(0).getFrameLength(); i++) {
+                    buf[i] = (byte) ((src1[i] + src2[i]) >> 1); //Records empty sound
+                }
+                out.write(buf);
+            }
+        } catch (Exception EX) {
+            System.out.printf(EX.toString());
+        }
+    }//GEN-LAST:event_RecordBActionPerformed
 
     /**
      * @param args the command line arguments

@@ -125,6 +125,9 @@
       <Properties>
         <Property name="text" type="java.lang.String" value="Record"/>
       </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="RecordBActionPerformed"/>
+      </Events>
     </Component>
     <Component class="javax.swing.JButton" name="ExportB">
       <Properties>
@@ -307,7 +310,7 @@
         <Component class="javax.swing.JTable" name="TableCombine">
           <Properties>
             <Property name="model" type="javax.swing.table.TableModel" editor="org.netbeans.modules.form.editors2.TableModelEditor">
-              <Table columnCount="1" rowCount="1">
+              <Table columnCount="1" rowCount="0">
                 <Column editable="true" title="Loops to Combine" type="java.lang.Object"/>
               </Table>
             </Property>
