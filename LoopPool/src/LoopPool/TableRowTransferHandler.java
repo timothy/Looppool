@@ -1,9 +1,6 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * obtained and modified http://docs.oracle.com/javase/tutorial/uiswing/dnd/dropmodedemo.html
  */
-
 package LoopPool;
 
 import java.awt.Cursor;
@@ -24,8 +21,12 @@ import javax.swing.TransferHandler;
 import static javax.swing.TransferHandler.MOVE;
 import javax.swing.TransferHandler.TransferSupport;
 import javax.swing.table.DefaultTableModel;
+/*
+ Class to handle dragand drop function
+ */
 
 class TableRowTransferHandler extends TransferHandler {
+
     private final DataFlavor localObjectFlavor;
     private int[] indices;
     private int addIndex = -1; //Location where items were added
@@ -36,29 +37,46 @@ class TableRowTransferHandler extends TransferHandler {
         super();
         localObjectFlavor = new ActivationDataFlavor(Object[].class, DataFlavor.javaJVMLocalObjectMimeType, "Array of items");
     }
-    @Override protected Transferable createTransferable(JComponent c) {
+    /*
+     Creates a transferable object
+     */
+
+    @Override
+    protected Transferable createTransferable(JComponent c) {
         source = c;
         JTable table = (JTable) c;
         DefaultTableModel model = (DefaultTableModel) table.getModel();
         List<Object> list = new ArrayList<>();
         indices = table.getSelectedRows();
-        for (int i: indices) {
+        for (int i : indices) {
             list.add(model.getDataVector().elementAt(i));
         }
         Object[] transferedObjects = list.toArray();
         return new DataHandler(transferedObjects, localObjectFlavor.getMimeType());
     }
-    @Override public boolean canImport(TransferSupport info) {
+    /*
+     determins if it can be imported
+     */
+
+    @Override
+    public boolean canImport(TransferSupport info) {
         JTable table = (JTable) info.getComponent();
         boolean isDropable = info.isDrop() && info.isDataFlavorSupported(localObjectFlavor);
         //XXX bug?
         table.setCursor(isDropable ? DragSource.DefaultMoveDrop : DragSource.DefaultMoveNoDrop);
         return isDropable;
     }
-    @Override public int getSourceActions(JComponent c) {
+
+    @Override
+    public int getSourceActions(JComponent c) {
         return MOVE; //TransferHandler.COPY_OR_MOVE;
     }
-    @Override public boolean importData(TransferSupport info) {
+    /*
+     Obtains data for transfer
+     */
+
+    @Override
+    public boolean importData(TransferSupport info) {
         if (!canImport(info)) {
             return false;
         }
@@ -93,9 +111,12 @@ class TableRowTransferHandler extends TransferHandler {
         }
         return false;
     }
-    @Override protected void exportDone(JComponent c, Transferable data, int action) {
+
+    @Override
+    protected void exportDone(JComponent c, Transferable data, int action) {
         cleanup(c, action == MOVE);
     }
+
     private void cleanup(JComponent c, boolean remove) {
         if (remove && indices != null) {
             c.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
@@ -111,7 +132,7 @@ class TableRowTransferHandler extends TransferHandler {
                 model.removeRow(indices[i]);
             }
         }
-        indices  = null;
+        indices = null;
         addCount = 0;
         addIndex = -1;
     }

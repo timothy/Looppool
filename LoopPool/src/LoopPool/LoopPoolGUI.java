@@ -24,7 +24,7 @@ import javax.swing.table.DefaultTableModel;
 
 /**
  *
- * @author kamonson17 And Timothy
+ * @author Kamonson And Timothy
  */
 class MyCustomFilter extends javax.swing.filechooser.FileFilter {
 
