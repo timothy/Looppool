@@ -427,26 +427,47 @@ public class LoopPoolGUI extends javax.swing.JFrame {
     }//GEN-LAST:event_PlayBActionPerformed
     /**
      * Finds elements from the tablecombine and loops through adding each to the
-     * conwav.wav file
+     * conwav.wav file. this cancatonates the files together...
      *
      * @param evt Event of the Export button click
      */
     private void ExportBActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ExportBActionPerformed
         try {
-            for (int i = 0; i < this.TableCombine.getRowCount(); i++) {
-                a = (AudioFile) this.TableCombine.getValueAt(i, 0);
+            int size = this.TableCombine.getRowCount() - 1;
+            if (size > 0) {
+                for (int i = 0; i < size; i++) {
+                    if (i != 0 && size > 1) {
 
-                AudioInputStream clip1 = AudioSystem.getAudioInputStream(new File(a.getLocation()));
+                        a = (AudioFile) this.TableCombine.getValueAt(i + 1, 0);
 
-                AudioInputStream clip2 = AudioSystem.getAudioInputStream(new File("conwav.wav"));
+                        AudioInputStream clip1 = AudioSystem.getAudioInputStream(new File(a.getLocation()));
 
-                AudioInputStream appendedFiles
-                        = new AudioInputStream(
-                                new SequenceInputStream(clip1, clip2),
-                                clip1.getFormat(),
-                                clip1.getFrameLength() + clip2.getFrameLength());
-                AudioSystem.write(appendedFiles, AudioFileFormat.Type.WAVE, new File("conwav.wav"));
+                        AudioInputStream clip2 = AudioSystem.getAudioInputStream(new File("conwav" + String.valueOf(i) + ".wav"));
 
+                        AudioInputStream appendedFiles
+                                = new AudioInputStream(
+                                        new SequenceInputStream(clip1, clip2),
+                                        clip1.getFormat(),
+                                        clip1.getFrameLength() + clip2.getFrameLength());
+                        AudioSystem.write(appendedFiles, AudioFileFormat.Type.WAVE, new File("conwav" + String.valueOf(i + 1) + ".wav"));
+
+                    } else {
+                        a = (AudioFile) this.TableCombine.getValueAt(i, 0);
+
+                        AudioInputStream clip1 = AudioSystem.getAudioInputStream(new File(a.getLocation()));
+
+                        a = (AudioFile) this.TableCombine.getValueAt(i + 1, 0);
+
+                        AudioInputStream clip2 = AudioSystem.getAudioInputStream(new File(a.getLocation()));
+
+                        AudioInputStream appendedFiles
+                                = new AudioInputStream(
+                                        new SequenceInputStream(clip1, clip2),
+                                        clip1.getFormat(),
+                                        clip1.getFrameLength() + clip2.getFrameLength());
+                        AudioSystem.write(appendedFiles, AudioFileFormat.Type.WAVE, new File("conwav1.wav"));
+                    }
+                }
             }
         } catch (Exception Ex) {
             Ex.printStackTrace();
@@ -520,14 +541,17 @@ public class LoopPoolGUI extends javax.swing.JFrame {
 
     private void RecordBActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_RecordBActionPerformed
         try {
-            Path srcFile = Paths.get(v.get(this.MusicTable.convertRowIndexToModel(this.MusicTable.getSelectedRow())).getLocation());
-            Path srcFile2 = Paths.get(v.get(this.MusicTable2.convertRowIndexToModel(this.MusicTable2.getSelectedRow())).getLocation());
+            a = (AudioFile) this.MusicTable.getValueAt(0, 0);
+            Path srcFile = Paths.get(a.getLocation());
+            a = (AudioFile) this.MusicTable2.getValueAt(0, 0);
+            Path srcFile2 = Paths.get(a.getLocation());
+            
             File dstFile = new File("newwav.wav");
             try (FileOutputStream out = new FileOutputStream(dstFile)) {
                 byte[] src1 = Files.readAllBytes(srcFile);
                 byte[] src2 = Files.readAllBytes(srcFile2);
                 byte[] buf = new byte[src1.length - 44];
-                for (int i = 0; i < v.get(0).getFrameLength(); i++) {
+                for (int i = 0; i < buf.length; i++) {
                     buf[i] = (byte) ((src1[i] + src2[i]) >> 1); //Records empty sound
                 }
                 out.write(buf);
