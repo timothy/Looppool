@@ -59,6 +59,7 @@ public class LoopPoolGUI extends javax.swing.JFrame {
         initComponents();
         this.TableCombine.setDragEnabled(true);
 
+//PT -- copy/paste here. Maybe a function?
         this.MusicTable.getSelectionModel().setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
         this.MusicTable.setTransferHandler(handler);
         this.MusicTable.setDropMode(DropMode.INSERT_ROWS);
@@ -107,6 +108,7 @@ public class LoopPoolGUI extends javax.swing.JFrame {
      * Plays the songs that are selected in the table
      */
     void Play() {
+        //PT -- comments here on how thee if statements are different (logically)
         if (MusicTable.getSelectedRow() >= 0 && MusicTable2.getSelectedRow() < 0) {
             row = MusicTable.getSelectedRow();
             a = (AudioFile) this.MusicTable.getValueAt(row, 0);
