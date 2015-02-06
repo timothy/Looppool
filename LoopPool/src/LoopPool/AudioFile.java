@@ -36,6 +36,7 @@ public class AudioFile extends InputStream {
             this.audioFile = Applet.newAudioClip(u);
             this.location = s;
         } catch (Exception ex) {
+         //PT -- System.out doesn't work well for GUI apps
             System.out.println("Ah crap...something went wrong in the audio inport" + ex.toString());
         }
     }
